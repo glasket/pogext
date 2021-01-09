@@ -1,6 +1,6 @@
 {
   "name": "Actual PogChamp",
-  "version": "1.0.2",
+  "version": "1.0.2.1",
   "description": "Replaces the Twitch Global PogChamp with the original (runs locally using Javascript).",
   "manifest_version": 2,
   "content_scripts": [{

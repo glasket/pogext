@@ -1,5 +1,4 @@
 window.addEventListener('load', () => {
-  console.log('Running');
   // Grab page elements for observation
   const chatList = document.getElementsByClassName(
     'chat-scrollable-area__message-container'
@@ -105,7 +104,6 @@ window.addEventListener('load', () => {
   const cardObserver = new MutationObserver((muts, obs) => {
     muts.forEach((mut) => {
       if (mut.type === 'childList' && mut.addedNodes.length > 0) {
-        console.log(mut.addedNodes[0]);
         waitForImage(mut.addedNodes[0], 0);
       }
     });
