@@ -3,9 +3,10 @@
   "version": "1.0",
   "description": "Replaces the Twitch Global PogChamp with the original (runs locally using Javascript).",
   "manifest_version": 2,
-  "permissions": ["https://*.twitch.tv/*", "activeTab"],
+  "permissions": ["*://*.twitch.tv/*", "activeTab"],
   "content_scripts": [{
-      "matches": ["https://*.twitch.tv/"],
+      "matches": ["*://*.twitch.tv/*"],
+      "run_at": "document_end",
       "js": ["pog.js"]
   }],
   "icons": {
@@ -14,5 +15,8 @@
       "48": "images/48.png",
       "64": "images/64.png",
       "128": "images/128.png"
-  }
+  },
+  "web_accessible_resources": [
+    "images/*.png"
+  ]
 }

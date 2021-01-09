@@ -1,4 +1,5 @@
 window.addEventListener('load', () => {
+  console.log('Running');
   // Grab page elements for observation
   const chatList = document.getElementsByClassName(
     'chat-scrollable-area__message-container'
@@ -112,4 +113,4 @@ window.addEventListener('load', () => {
 
   cardObserver.observe(cardHolder, { childList: true });
   // End Emote Card
-});
+}, false);
