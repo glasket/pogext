@@ -17,9 +17,9 @@ window.addEventListener(
 
     // Create the PogChamp emote image
     const pog = document.createElement('img');
-    pog.setAttribute('alt', 'PogChamp');
+    pog.alt = 'PogChamp';
     pog.className = 'chat-image chat-line__message--emote';
-    pog.setAttribute('src', chrome.runtime.getURL('images/128.png'));
+    pog.src = chrome.runtime.getURL('images/128.png');
 
     // TODO Fix broken tooltip when swapping image
     // TODO Add configuration for the timeouts
@@ -29,10 +29,9 @@ window.addEventListener(
       const emotes = chatMessage.getElementsByClassName(
         'chat-line__message--emote-button'
       );
-      for (let x = 0; x < emotes.length; x++) {
+      for (let x = 0, l = emotes.length; x < l; x++) {
         const img = emotes[x].children[0].children[0].children[0];
-        if (img.getAttribute('alt') === 'PogChamp')
-          img.replaceWith(pog.cloneNode());
+        if (img.alt === 'PogChamp') img.replaceWith(pog.cloneNode());
       }
     };
 
@@ -46,11 +45,10 @@ window.addEventListener(
       });
     });
 
-    const preload = chatList.children.length;
     chatObserver.observe(chatList, { childList: true });
-
-    // Get messages that had already loaded
-    for (let x = 0; x < preload; x++) {
+    // Get messages that had already loaded.
+    // Preload may catch messages already read by the observer, but this is minor and ensures no messages are missed.
+    for (let x = 0, preload = chatList.children.length; x < preload; x++) {
       getAndSwapEmotes(chatList.children[x]);
     }
 
@@ -64,10 +62,10 @@ window.addEventListener(
           'button[name="PogChamp"]:not(.pogswap)'
         );
         if (pogButtons.length > 0) {
-          for (let y = 0; y < pogButtons.length; y++) {
+          for (let x = 0, l = pogButtons.length; x < l; y++) {
             const pbImg = pogButtons[y].children[0].children[0];
             pbImg.replaceWith(pogPicker.cloneNode());
-            pbImg.className += 'pogswap';
+            pbImg.className += 'pogswap'; // ensures we don't waste cycles on buttons that have been changed.
           }
         }
       }, 1);
@@ -76,9 +74,9 @@ window.addEventListener(
     const scrollObserver = new MutationObserver((muts, obs) => {
       muts.forEach((mut) => {
         if (mut.type === 'childList') {
-          mut.addedNodes.forEach(node => {
+          mut.addedNodes.forEach((node) => {
             swapPogButtons(node);
-          })
+          });
         }
       });
     });
@@ -88,7 +86,12 @@ window.addEventListener(
         if (mut.type === 'childList') {
           swapPogButtons(mut.addedNodes[0]);
           pickerObserver.disconnect();
-          scrollObserver.observe(mut.addedNodes[0].getElementsByClassName('simplebar-content emote-picker__scroll-container')[0].children[0], {childList: true, subtree: true});
+          scrollObserver.observe(
+            mut.addedNodes[0].getElementsByClassName(
+              'simplebar-content emote-picker__scroll-container'
+            )[0].children[0],
+            { childList: true, subtree: true }
+          );
         }
       });
     });
@@ -102,12 +105,12 @@ window.addEventListener(
 
     // Timeouts help with delay in loading, 50ms is arbitrary limit
     const waitForImage = (newNode, val) => {
-      // Give up after 50ms
+      // Give up after ~50ms
       if (val === 49) {
         return;
       }
       setTimeout(() => {
-        const emoteImg = newNode.querySelector('img');
+        const emoteImg = newNode.getElementsByTagName('img');
         if (emoteImg && emoteImg.getAttribute('alt') === 'PogChamp') {
           emoteImg.replaceWith(bigPog);
         } else {
