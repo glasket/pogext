@@ -11,8 +11,11 @@ MutationObservers. Using these, we can keep an eye on key sections of the Twitch
 By swapping the twitch image tags with ones provided in the script. They point to an included version of the original PogChamp emote, and are coded to match the original Twitch versions when it comes to CSS classes.
 
 ## How do I install it?
-Check the releases page, the latest version will always be there with instructions on how to install. This repo will also be updated with a link to the extension on the Chrome Web Store once it is accepted.
+Check out the extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/actual-pogchamp/gbkjnejppojphhgjpfnbbmnohmgbbbdg).\
+\
+You can also check the [releases page](https://github.com/Glasket/pogext/releases), the latest version will always be there with instructions on how to install it manually.
 
 ## How can I help?
 Send suggestions, open issues, and report bugs. If you really want to you can even contribute here on GitHub.\
+\
 [Contact](mailto:temperdesignllc@gmail.com)
