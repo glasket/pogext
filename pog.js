@@ -37,7 +37,9 @@ window.addEventListener('load', () => {
   const chatObserver = new MutationObserver((muts, observer) => {
     muts.forEach((mut) => {
       if (mut.type === 'childList') {
-        getAndSwapEmotes(mut.target.lastChild);
+        mut.addedNodes.forEach(node => {
+          getAndSwapEmotes(node);
+        })
       }
     });
   });
