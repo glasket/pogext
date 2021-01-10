@@ -88,7 +88,6 @@ window.addEventListener(
         if (mut.type === 'childList') {
           swapPogButtons(mut.addedNodes[0]);
           pickerObserver.disconnect();
-          console.log(mut.addedNodes[0].getElementsByClassName('simplebar-content emote-picker__scroll-container')[0].children[0])
           scrollObserver.observe(mut.addedNodes[0].getElementsByClassName('simplebar-content emote-picker__scroll-container')[0].children[0], {childList: true, subtree: true});
         }
       });
