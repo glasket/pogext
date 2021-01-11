@@ -171,11 +171,9 @@ window.onload = () => {
     )[0].children[0];
 
     const vodWaitForLoadObserver = new MutationObserver((muts, obs) => {
-      console.log('Vod loaded');
       muts.forEach((mut) => {
         if (mut.type === 'childList') {
           if (vodChatParent.firstElementChild.tagName === 'UL') {
-            console.log('Vod loaded UL confirmed');
             vodWaitForLoadObserver.disconnect();
             vodChatLoaded(vodChatParent.firstElementChild);
           }
@@ -184,10 +182,8 @@ window.onload = () => {
     });
 
     if (vodChatParent.firstElementChild.tagName === 'UL') {
-      console.log('Already loaded');
       vodChatLoaded(vodChatParent.firstElementChild);
     } else {
-      console.log('Must wait');
       vodWaitForLoadObserver.observe(vodChatParent, { childList: true });
     }
   };
