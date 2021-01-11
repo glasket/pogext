@@ -15,6 +15,10 @@ Check out the extension on the [Chrome Web Store](https://chrome.google.com/webs
 \
 You can also check the [releases page](https://github.com/Glasket/pogext/releases), the latest version will always be there with instructions on how to install it manually.
 
+# NOTE
+Due to Twitch being a SPA (Single Page App), the onload event used by the script only works when you either a) directly click on a link to a stream or VOD; or b) refresh the page after navigating to a stream or VOD.\
+I'm currently looking into using MutationObservers and pushState to monitor navigation in order to manually 'restart' the script when the URL changes, but this may take some time.
+
 ## How can I help?
 Send suggestions, open issues, and report bugs. If you really want to you can even contribute here on GitHub.\
 \
