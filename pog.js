@@ -1,60 +1,58 @@
-window.addEventListener(
-  'load',
-  () => {
-    // Grab page elements for observation
-    const chatList = document.getElementsByClassName(
-      'chat-scrollable-area__message-container'
-    )[0];
-    const pickerParentBlock = document.querySelector(
-      'div.tw-block.tw-relative.tw-z-default'
-    );
-    const emotePickerButton = document.querySelector(
-      'button[data-a-target="emote-picker-button"]'
-    );
+window.onload = () => {
+  // PogChamp emote for chat
+  const pog = document.createElement('img');
+  pog.alt = 'PogChamp';
+  pog.className = 'chat-image chat-line__message--emote';
+  pog.src = chrome.runtime.getURL('images/128.png');
+
+  // PogChamp for emote picker
+  const pogPicker = pog.cloneNode();
+  pogPicker.className = 'emote-picker__image';
+
+  // PogChamp for emote card
+  const bigPog = pog.cloneNode();
+  bigPog.className = 'emote-card__big-emote tw-image';
+  bigPog.setAttribute('data-test-selector', 'big-emote');
+
+  // Card
+  const runCard = () => {
     const cardHolder = document.querySelector(
       'div.tw-full-height.tw-full-width.tw-relative.tw-z-above.viewer-card-layer'
     );
 
-    // Create the PogChamp emote image
-    const pog = document.createElement('img');
-    pog.alt = 'PogChamp';
-    pog.className = 'chat-image chat-line__message--emote';
-    pog.src = chrome.runtime.getURL('images/128.png');
-
-    // TODO Fix broken tooltip when swapping image
-    // TODO Add configuration for the timeouts
-
-    // Used for the chat messages
-    const getAndSwapEmotes = (chatMessage) => {
-      const emotes = chatMessage.getElementsByClassName(
-        'chat-line__message--emote-button'
-      );
-      for (let x = 0, l = emotes.length; x < l; x++) {
-        const img = emotes[x].children[0].children[0].children[0];
-        if (img.alt === 'PogChamp') img.replaceWith(pog.cloneNode());
+    // Timeouts help with delay in loading, 50ms is arbitrary limit
+    const waitForImage = (newNode, val) => {
+      // Give up after ~50ms
+      if (val === 49) {
+        return;
       }
+      setTimeout(() => {
+        const emoteImg = newNode.getElementsByTagName('IMG')[0];
+        if (emoteImg && emoteImg.getAttribute('alt') === 'PogChamp') {
+          emoteImg.replaceWith(bigPog);
+        } else {
+          waitForImage(newNode, val++);
+        }
+      }, 1);
     };
 
-    const chatObserver = new MutationObserver((muts, observer) => {
+    const cardObserver = new MutationObserver((muts, obs) => {
       muts.forEach((mut) => {
-        if (mut.type === 'childList') {
-          mut.addedNodes.forEach((node) => {
-            getAndSwapEmotes(node);
-          });
+        if (mut.type === 'childList' && mut.addedNodes.length > 0) {
+          waitForImage(mut.addedNodes[0], 0);
         }
       });
     });
 
-    chatObserver.observe(chatList, { childList: true });
-    // Get messages that had already loaded.
-    // Preload may catch messages already read by the observer, but this is minor and ensures no messages are missed.
-    for (let x = 0, preload = chatList.children.length; x < preload; x++) {
-      getAndSwapEmotes(chatList.children[x]);
-    }
+    cardObserver.observe(cardHolder, { childList: true });
+  };
+  // End Card
 
-    // Emote Picker
-    const pogPicker = pog.cloneNode();
-    pogPicker.className = 'emote-picker__image';
+  // Picker
+  const runPicker = () => {
+    const pickerParentBlock = document.querySelector(
+      'div.tw-block.tw-relative.tw-z-default'
+    );
 
     const swapPogButtons = (newNode) => {
       setTimeout(() => {
@@ -62,8 +60,8 @@ window.addEventListener(
           'button[name="PogChamp"]:not(.pogswap)'
         );
         if (pogButtons.length > 0) {
-          for (let x = 0, l = pogButtons.length; x < l; y++) {
-            const pbImg = pogButtons[y].children[0].children[0];
+          for (let x = 0, l = pogButtons.length; x < l; x++) {
+            const pbImg = pogButtons[x].children[0].children[0];
             pbImg.replaceWith(pogPicker.cloneNode());
             pbImg.className += 'pogswap'; // ensures we don't waste cycles on buttons that have been changed.
           }
@@ -95,40 +93,110 @@ window.addEventListener(
         }
       });
     });
+
     pickerObserver.observe(pickerParentBlock, { childList: true });
-    // End Emote Picker
+  };
+  // End Picker
 
-    // Emote Card
-    const bigPog = pog.cloneNode();
-    bigPog.className = 'emote-card__big-emote tw-image';
-    bigPog.setAttribute('data-test-selector', 'big-emote');
+  // Live Chat
+  const runLive = () => {
+    const chatList = document.getElementsByClassName(
+      'chat-scrollable-area__message-container'
+    )[0];
 
-    // Timeouts help with delay in loading, 50ms is arbitrary limit
-    const waitForImage = (newNode, val) => {
-      // Give up after ~50ms
-      if (val === 49) {
-        return;
+    const getAndSwapEmotes = (chatMessage) => {
+      const emotes = chatMessage.getElementsByClassName(
+        'chat-line__message--emote-button'
+      );
+      for (let x = 0, l = emotes.length; x < l; x++) {
+        const img = emotes[x].children[0].children[0].children[0];
+        if (img.alt === 'PogChamp') img.replaceWith(pog.cloneNode());
       }
-      setTimeout(() => {
-        const emoteImg = newNode.getElementsByTagName('img');
-        if (emoteImg && emoteImg.getAttribute('alt') === 'PogChamp') {
-          emoteImg.replaceWith(bigPog);
-        } else {
-          waitForImage(newNode, val++);
-        }
-      }, 1);
     };
 
-    const cardObserver = new MutationObserver((muts, obs) => {
+    const chatObserver = new MutationObserver((muts, observer) => {
       muts.forEach((mut) => {
         if (mut.type === 'childList' && mut.addedNodes.length > 0) {
-          waitForImage(mut.addedNodes[0], 0);
+          mut.addedNodes.forEach((node) => {
+            getAndSwapEmotes(node);
+          });
         }
       });
     });
 
-    cardObserver.observe(cardHolder, { childList: true });
-    // End Emote Card
-  },
-  false
-);
+    runPicker();
+
+    chatObserver.observe(chatList, { childList: true });
+    // Get messages that had already loaded.
+    // Preload may catch messages already read by the observer, but this is minor and ensures no messages are missed.
+    for (let x = 0, preload = chatList.children.length; x < preload; x++) {
+      getAndSwapEmotes(chatList.children[x]);
+    }
+
+    runCard();
+  };
+  // End Live
+
+  // VOD Chat : Entirely different from Live Chat for some reason
+  const vodChatLoaded = (vodChat) => {
+    const getAndSwapVodEmotes = (chatMessage) => {
+      const emotes = chatMessage.getElementsByClassName(
+        'chat-image__container'
+      );
+      for (let x = 0, l = emotes.length; x < l; x++) {
+        const img = emotes[x].children[0];
+        if (img.alt === 'PogChamp') img.replaceWith(pog.cloneNode());
+      }
+    };
+
+    const vodChatObserver = new MutationObserver((muts, obs) => {
+      muts.forEach((mut) => {
+        if (mut.type === 'childList' && mut.addedNodes.length > 0) {
+          mut.addedNodes.forEach((node) => {
+            getAndSwapVodEmotes(node);
+          });
+        }
+      });
+    });
+
+    vodChatObserver.observe(vodChat, { childList: true });
+    for (let x = 0, preload = vodChat.children.length; x < preload; x++) {
+      getAndSwapVodEmotes(vodChat.children[x]);
+    }
+  };
+
+  const runVod = () => {
+    const vodChatParent = document.getElementsByClassName(
+      'video-chat__message-list-wrapper'
+    )[0].children[0];
+
+    const vodWaitForLoadObserver = new MutationObserver((muts, obs) => {
+      console.log('Vod loaded');
+      muts.forEach((mut) => {
+        if (mut.type === 'childList') {
+          if (vodChatParent.firstElementChild.tagName === 'UL') {
+            console.log('Vod loaded UL confirmed');
+            vodWaitForLoadObserver.disconnect();
+            vodChatLoaded(vodChatParent.firstElementChild);
+          }
+        }
+      });
+    });
+
+    if (vodChatParent.firstElementChild.tagName === 'UL') {
+      console.log('Already loaded');
+      vodChatLoaded(vodChatParent.firstElementChild);
+    } else {
+      console.log('Must wait');
+      vodWaitForLoadObserver.observe(vodChatParent, { childList: true });
+    }
+  };
+
+  if (window.location.pathname.split('/')[1] === 'videos') {
+    runVod();
+  } else {
+    runLive();
+  }
+  // TODO Fix broken tooltip when swapping image
+  // TODO Add configuration for the timeouts
+};
