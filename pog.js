@@ -53,7 +53,7 @@ const cardObserver = new MutationObserver((muts, obs) => {
 });
 
 const runCard = () => {
-  console.log('RUNCARD', cardHolder, listeners['card'])
+  console.log('RUNCARD', cardHolder, listeners['card']);
   if (cardHolder && !listeners['card']) {
     cardObserver.observe(cardHolder, { childList: true });
     listeners['card'] = true;
@@ -63,19 +63,15 @@ const runCard = () => {
 
 // Picker
 const swapPogButtons = (newNode) => {
-  console.log('Swapping pogs in picker')
-  setTimeout(() => {
-    const pogButtons = newNode.querySelectorAll(
-      'button[name="PogChamp"]:not(.pogswap)'
-    );
-    if (pogButtons.length > 0) {
-      for (let x = 0, l = pogButtons.length; x < l; x++) {
-        const pbImg = pogButtons[x].children[0].children[0];
-        pbImg.replaceWith(pogPicker.cloneNode());
-        pbImg.className += 'pogswap'; // ensures we don't waste cycles on buttons that have been changed.
-      }
+  console.log('Swapping pogs in picker');
+  const pogButtons = newNode.querySelectorAll('button[name="PogChamp"]');
+  if (pogButtons.length > 0) {
+    for (let x = 0, l = pogButtons.length; x < l; x++) {
+      const pbImg = pogButtons[x].children[0].children[0];
+      pbImg.replaceWith(pogPicker.cloneNode());
+      pbImg.className += 'pogswap'; // ensures we don't waste cycles on buttons that have been changed.
     }
-  }, 1);
+  }
 };
 
 const scrollObserver = new MutationObserver((muts, obs) => {
@@ -89,7 +85,7 @@ const scrollObserver = new MutationObserver((muts, obs) => {
 });
 
 const pickerObserver = new MutationObserver((muts, obs) => {
-  console.log('Picker observer change detected')
+  console.log('Picker observer change detected');
   muts.forEach((mut) => {
     if (mut.type === 'childList') {
       swapPogButtons(mut.addedNodes[0]);
@@ -107,8 +103,23 @@ const pickerObserver = new MutationObserver((muts, obs) => {
 });
 
 const runPicker = () => {
-  console.log('RUNPICKER', pickerParentBlock, listeners['picker'])
-  if (pickerParentBlock && !listeners['picker']) {
+  console.log('RUNPICKER', pickerParentBlock, listeners['picker']);
+  const emoteContent = pickerParentBlock.getElementsByClassName(
+    'emote-picker__content-block'
+  );
+  console.log(emoteContent);
+  if (emoteContent.length > 0) {
+    for (let x = 0, l = emoteContent.length; x < l; x++) {
+      swapPogButtons(emoteContent[x]);
+    }
+    scrollObserver.observe(
+      pickerParentBlock.children[0].getElementsByClassName(
+        'simplebar-content emote-picker__scroll-container'
+      )[0].children[0],
+      { childList: true, subtree: true }
+    );
+    listeners['scroll'] = true;
+  } else if (pickerParentBlock && !listeners['picker']) {
     pickerObserver.observe(pickerParentBlock, { childList: true });
     listeners['picker'] = true;
   }
@@ -139,7 +150,7 @@ const chatObserver = new MutationObserver((muts, observer) => {
 const runLive = () => {
   runPicker();
 
-  console.log('RUNCHAT', chatList, listeners['chat'])
+  console.log('RUNCHAT', chatList, listeners['chat']);
   chatObserver.observe(chatList, { childList: true });
   // Get messages that had already loaded.
   // Preload may catch messages already read by the observer, but this is minor and ensures no messages are missed.
@@ -280,7 +291,7 @@ chrome.runtime.onMessage.addListener((msg) => {
             console.error('BAD KEY IN LISTENERS');
         }
         listeners[key] = false;
-        console.log(key, listeners[key])
+        console.log(key, listeners[key]);
       }
     }
     setTimeout(() => {
@@ -298,4 +309,4 @@ start();
 
 setInterval(() => {
   console.log(listeners);
-}, 10000)
+}, 10000);
