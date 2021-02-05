@@ -1,5 +1,5 @@
 {
-  "includes": ["manifest.json", "images", "pog.js"],
+  "includes": ["manifest.json", "images", "pog.js", "background.js"],
   "excludes": ["images/screenshot.png", "images/1.jpg"],
   "entryPoints": ["pog.js"]
 }

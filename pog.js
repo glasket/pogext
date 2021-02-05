@@ -6,10 +6,9 @@ const listeners = {
   vod: false,
 }; // Used for tracking subscriptions
 
+// Have to be let because they change on navigation
 let cardHolder = null;
-
 let chatList = null;
-
 let pickerParentBlock = null;
 
 // PogChamp emote for chat
@@ -53,7 +52,6 @@ const cardObserver = new MutationObserver((muts, obs) => {
 });
 
 const runCard = () => {
-  console.log('RUNCARD', cardHolder, listeners['card']);
   if (cardHolder && !listeners['card']) {
     cardObserver.observe(cardHolder, { childList: true });
     listeners['card'] = true;
@@ -63,7 +61,6 @@ const runCard = () => {
 
 // Picker
 const swapPogButtons = (newNode) => {
-  console.log('Swapping pogs in picker');
   const pogButtons = newNode.querySelectorAll('button[name="PogChamp"]');
   if (pogButtons.length > 0) {
     for (let x = 0, l = pogButtons.length; x < l; x++) {
@@ -85,7 +82,6 @@ const scrollObserver = new MutationObserver((muts, obs) => {
 });
 
 const pickerObserver = new MutationObserver((muts, obs) => {
-  console.log('Picker observer change detected');
   muts.forEach((mut) => {
     if (mut.type === 'childList') {
       swapPogButtons(mut.addedNodes[0]);
@@ -103,11 +99,9 @@ const pickerObserver = new MutationObserver((muts, obs) => {
 });
 
 const runPicker = () => {
-  console.log('RUNPICKER', pickerParentBlock, listeners['picker']);
   const emoteContent = pickerParentBlock.getElementsByClassName(
     'emote-picker__content-block'
   );
-  console.log(emoteContent);
   if (emoteContent.length > 0) {
     for (let x = 0, l = emoteContent.length; x < l; x++) {
       swapPogButtons(emoteContent[x]);
@@ -150,7 +144,6 @@ const chatObserver = new MutationObserver((muts, observer) => {
 const runLive = () => {
   runPicker();
 
-  console.log('RUNCHAT', chatList, listeners['chat']);
   chatObserver.observe(chatList, { childList: true });
   // Get messages that had already loaded.
   // Preload may catch messages already read by the observer, but this is minor and ensures no messages are missed.
@@ -213,7 +206,6 @@ const runVod = () => {
 };
 
 const fetchElements = (ctr) => {
-  console.log('Fetching');
   if (!cardHolder) {
     cardHolder = document.querySelector(
       'div.tw-full-height.tw-full-width.tw-relative.tw-z-above.viewer-card-layer'
@@ -232,11 +224,7 @@ const fetchElements = (ctr) => {
     )[0];
   }
 
-  console.log(cardHolder);
-  console.log(pickerParentBlock);
-  console.log(chatList);
   if (ctr >= 10) {
-    console.error('Could not locate the necessary elements');
     return;
   }
 
@@ -288,25 +276,18 @@ chrome.runtime.onMessage.addListener((msg) => {
             vodChatObserver.disconnect();
             break;
           default:
-            console.error('BAD KEY IN LISTENERS');
         }
         listeners[key] = false;
-        console.log(key, listeners[key]);
       }
     }
     setTimeout(() => {
-      waiters--;
-      console.log(waiters);
+      waiters--; // For debouncing, sort of
       if (waiters !== 0) {
         return;
       }
       start();
-    }, 5000);
+    }, 3000);
   }
 });
 
 start();
-
-setInterval(() => {
-  console.log(listeners);
-}, 10000);
