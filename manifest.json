@@ -3,6 +3,10 @@
   "version": "1.1.0.1",
   "description": "Script for replacing the twitch.tv global PogChamp emote with the original Gootecks version.",
   "manifest_version": 2,
+  "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+  },
   "content_scripts": [
     {
       "matches": ["*://*.twitch.tv/*"],
@@ -17,5 +21,6 @@
     "64": "images/64.png",
     "128": "images/128.png"
   },
+  "permissions": ["tabs", "webNavigation"],
   "web_accessible_resources": ["images/*.png"]
 }
