@@ -22,9 +22,10 @@ You can also check the [releases page](https://github.com/Glasket/pogext/release
 
 ## Can I use this in TamperMonkey?
 
-Currently the TamperMonkey script is behind the latest version, but for the most part yes. The gist for the script is located [here](https://gist.github.com/Glasket/b9e7138024f902dce85e95d06c6bb8e8).\
+__Yes__. The gist for the script can be found [here](https://gist.github.com/Glasket/b9e7138024f902dce85e95d06c6bb8e8).\
 \
-I will be updating it to at least 1.2 in order to make it functional without refreshing, but beyond that I will consider the script out of scope in terms of updates.
+The script runs version 1.2 of the extension, so sitewide on twitch without refreshing.\
+_However_, it will be considered out of scope beyond this point. If it breaks for some reason then updates aren't guaranteed as with the extension.
 
 ## How can I help?
 
