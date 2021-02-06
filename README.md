@@ -1,6 +1,12 @@
+<p>
+<img src="https://www.code-inspector.com/project/18671/status/svg">
+<a href="https://chrome.google.com/webstore/detail/actual-pogchamp/gbkjnejppojphhgjpfnbbmnohmgbbbdg"><img src="https://img.shields.io/chrome-web-store/v/gbkjnejppojphhgjpfnbbmnohmgbbbdg"></a>
+<a href="https://addons.mozilla.org/en-US/firefox/addon/actual-pogchamp/"><img src="https://img.shields.io/amo/v/actual-pogchamp"></a>
+</p>
+
 # Actual PogChamp
 
-A Chrome extension that replaces the current PogChamp emote on twitch.tv with the original Gootecks version of the emote
+A web extension that replaces the current PogChamp emote on twitch.tv with the original Gootecks version of the emote
 
 ## Why?
 
@@ -16,7 +22,7 @@ By swapping the twitch image tags with ones provided in the script. They point t
 
 ## How do I install it?
 
-Check out the extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/actual-pogchamp/gbkjnejppojphhgjpfnbbmnohmgbbbdg).\
+Check out the extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/actual-pogchamp/gbkjnejppojphhgjpfnbbmnohmgbbbdg) or on [AMO](https://addons.mozilla.org/en-US/firefox/addon/actual-pogchamp/).\
 \
 You can also check the [releases page](https://github.com/Glasket/pogext/releases), the latest version will always be there with instructions on how to install it manually.
 
