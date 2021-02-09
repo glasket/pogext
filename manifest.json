@@ -21,6 +21,6 @@
     "64": "images/64.png",
     "128": "images/128.png"
   },
-  "permissions": ["tabs", "webNavigation"],
+  "permissions": ["webNavigation"],
   "web_accessible_resources": ["images/*.png"]
 }
