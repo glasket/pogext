@@ -1,15 +1,20 @@
 const listeners = {
   card: false,
+  pickerD: false,
   picker: false,
   scroll: false,
   chat: false,
   vod: false,
+  search: false,
 }; // Used for tracking subscriptions
 
 // Have to be let because they change on navigation
 let cardHolder = null;
 let chatList = null;
 let pickerParentBlock = null;
+let picker = null;
+
+let searching = false;
 
 // PogChamp emote for chat
 const pog = document.createElement('img');
@@ -83,17 +88,92 @@ const scrollObserver = new MutationObserver((muts, obs) => {
 
 const pickerObserver = new MutationObserver((muts, obs) => {
   muts.forEach((mut) => {
-    if (mut.type === 'childList') {
+    if (mut.type === 'childList' && mut.addedNodes.length > 0) {
       swapPogButtons(mut.addedNodes[0]);
-      pickerObserver.disconnect();
-      listeners['picker'] = false;
-      scrollObserver.observe(
-        mut.addedNodes[0].getElementsByClassName(
+
+      if (!listeners['scroll']) {
+        const scrollContent = picker.getElementsByClassName(
           'simplebar-content emote-picker__scroll-container'
-        )[0].children[0],
-        { childList: true, subtree: true }
+        )[0];
+        scrollObserver.observe(scrollContent.children[0], {
+          childList: true,
+          subtree: true,
+        });
+        listeners['scroll'] = true;
+      }
+    }
+  });
+  if (searching) {
+    searchObserver.observe(
+      muts[2].addedNodes[0].getElementsByClassName(
+        'emote-picker__content-block'
+      )[0].children[1],
+      { childList: true }
+    );
+  } else {
+    searchObserver.disconnect();
+    listeners['search'] = false;
+  }
+});
+
+const pickerVisObserver = new MutationObserver((muts, obs) => {
+  muts.forEach((mut) => {
+    if (mut.type === 'attributes') {
+      searching = false;
+      searchObserver.disconnect();
+      listeners['search'] = false;
+    }
+  });
+});
+
+const searchObserver = new MutationObserver((muts, obs) => {
+  muts.forEach((mut) => {
+    if (mut.type === 'childList' && mut.addedNodes.length > 0) {
+      const pogButton = mut.addedNodes[0].querySelector(
+        'button[name="PogChamp"]'
       );
-      listeners['scroll'] = true;
+      if (pogButton) {
+        const pbImg = pogButton.children[0].children[0];
+        pbImg.replaceWith(pogPicker.cloneNode());
+        pbImg.className += 'pogswap'; // ensures we don't waste cycles on buttons that have been changed.
+      }
+    }
+  });
+});
+
+const pickerDialogObserver = new MutationObserver((muts, obs) => {
+  muts.forEach((mut) => {
+    // Picker button clicked for the first time
+    if (mut.type === 'childList') {
+      pickerDialogObserver.disconnect();
+      listeners['pickerD'] = false;
+      picker = document.getElementsByClassName('emote-picker')[0];
+      picker
+        .querySelector('input[type="search"]')
+        .addEventListener('input', (e) => {
+          if (e.target.value.length > 0 && !searching) {
+            searching = true;
+          } else if (e.target.value.length === 0) {
+            searching = false;
+          }
+        });
+      const scrollContent = mut.addedNodes[0].getElementsByClassName(
+        'simplebar-content emote-picker__scroll-container'
+      )[0];
+      if (scrollContent != null) {
+        swapPogButtons(mut.addedNodes[0]);
+        scrollObserver.observe(scrollContent.children[0], {
+          childList: true,
+          subtree: true,
+        });
+        listeners['scroll'] = true;
+      }
+      pickerObserver.observe(picker, { childList: true });
+      pickerVisObserver.observe(pickerParentBlock.children[0], {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+      listeners['picker'] = true;
     }
   });
 });
@@ -113,9 +193,9 @@ const runPicker = () => {
       { childList: true, subtree: true }
     );
     listeners['scroll'] = true;
-  } else if (pickerParentBlock && !listeners['picker']) {
-    pickerObserver.observe(pickerParentBlock, { childList: true });
-    listeners['picker'] = true;
+  } else if (pickerParentBlock && !listeners['pickerD']) {
+    pickerDialogObserver.observe(pickerParentBlock, { childList: true });
+    listeners['pickerD'] = true;
   }
 };
 // End Picker
@@ -260,17 +340,23 @@ chrome.runtime.onMessage.addListener((msg) => {
             cardObserver.disconnect();
             cardHolder = null;
             break;
-          case 'picker':
-            pickerObserver.disconnect();
+          case 'pickerD':
+            pickerDialogObserver.disconnect();
             pickerParentBlock = null;
             break;
+          case 'picker':
+            pickerObserver.disconnect();
+            pickerVisObserver.disconnect();
+            picker = null;
           case 'scroll':
             scrollObserver.disconnect();
             pickerParentBlock = null;
             break;
+          case 'search':
+            searchObserver.disconnect();
+            searching = false;
           case 'chat':
             chatObserver.disconnect();
-            chatList = null;
             break;
           case 'vod':
             vodChatObserver.disconnect();
@@ -280,6 +366,7 @@ chrome.runtime.onMessage.addListener((msg) => {
         listeners[key] = false;
       }
     }
+
     setTimeout(() => {
       waiters--; // For debouncing, sort of
       if (waiters !== 0) {
