@@ -1,5 +1,4 @@
 <p>
-<img src="https://www.code-inspector.com/project/18671/status/svg">
 <a href="https://chrome.google.com/webstore/detail/actual-pogchamp/gbkjnejppojphhgjpfnbbmnohmgbbbdg"><img src="https://img.shields.io/chrome-web-store/v/gbkjnejppojphhgjpfnbbmnohmgbbbdg"></a>
 <a href="https://addons.mozilla.org/en-US/firefox/addon/actual-pogchamp/"><img src="https://img.shields.io/amo/v/actual-pogchamp"></a>
 </p>
