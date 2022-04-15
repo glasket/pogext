@@ -203,10 +203,10 @@ const runPicker = () => {
 // Live Chat
 const getAndSwapEmotes = (chatMessage) => {
   const emotes = chatMessage.getElementsByClassName(
-    'chat-line__message--emote-button'
+    'chat-line__message--emote'
   );
   for (let x = 0, l = emotes.length; x < l; x++) {
-    const img = emotes[x].children[0].children[0].children[0];
+    const img = emotes[x];
     if (img.alt === 'PogChamp') img.replaceWith(pog.cloneNode());
   }
 };
@@ -222,7 +222,9 @@ const chatObserver = new MutationObserver((muts, observer) => {
 });
 
 const runLive = () => {
-  runPicker();
+  if (pickerParentBlock) {
+    runPicker();
+  }
 
   chatObserver.observe(chatList, { childList: true });
   // Get messages that had already loaded.
@@ -232,7 +234,9 @@ const runLive = () => {
   }
   listeners['chat'] = true;
 
-  runCard();
+  if (cardHolder) {
+    runCard();
+  }
 };
 // End Live
 
@@ -304,13 +308,19 @@ const fetchElements = (ctr) => {
     )[0];
   }
 
-  if (ctr >= 10) {
+  if (ctr >= 6) {
+    console.log('Missing elements');
+    if (chatList) {
+      console.log('Chat present');
+      runLive();
+    }
     return;
   }
 
   if (!cardHolder || !pickerParentBlock || !chatList) {
-    setTimeout(fetchElements, ctr * 1000, ctr++);
+    setTimeout(fetchElements, ctr * 1000, ctr + 1);
   } else {
+    console.log('Running live');
     runLive();
   }
 };
@@ -319,8 +329,10 @@ const start = () => {
   const loc = window.location.pathname.split('/')[1];
   if (loc) {
     if (loc === 'videos') {
+      console.log('vod');
       runVod();
     } else {
+      console.log('live');
       fetchElements(1);
     }
   }
@@ -376,5 +388,5 @@ chrome.runtime.onMessage.addListener((msg) => {
     }, 3000);
   }
 });
-
+console.log('Loaded');
 start();
