@@ -27,3 +27,22 @@ jobs:
         with:
           name: pogext
           path: dist
+  firefox:
+    name: Build Firefox source code submission
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Gather files
+        run: |
+          mkdir ff
+          cp ./{manifest.json,package-lock.json,package.json,pog.js,webpack.config.js,background.js} ff/
+          mkdir ff/images
+          cp images/128.png ff/images/
+          cp firefox/* ff/
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: firefox-source
+          path: ff

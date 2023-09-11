@@ -23,5 +23,10 @@
       "resources": ["images/*.webp"],
       "matches": ["*://*.twitch.tv/*"]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{abbef430-891c-4b93-b8dd-548949a900bd}"
+    }
+  }
 }
