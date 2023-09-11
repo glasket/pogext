@@ -23,19 +23,10 @@ By swapping the twitch image tags with ones provided in the script. They point t
 
 Check out the extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/actual-pogchamp/gbkjnejppojphhgjpfnbbmnohmgbbbdg) or on [AMO](https://addons.mozilla.org/en-US/firefox/addon/actual-pogchamp/).\
 \
-You can also check the [releases page](https://github.com/Glasket/pogext/releases), the latest version will always be there with instructions on how to install it manually.
-
-## Can I use this in TamperMonkey?
-
-__Yes__. The gist for the script can be found [here](https://gist.github.com/Glasket/b9e7138024f902dce85e95d06c6bb8e8).\
-\
-The script runs version 1.2 of the extension, so sitewide on twitch without refreshing.\
-_However_, it will be considered out of scope beyond this point. If it breaks for some reason then updates aren't guaranteed as with the extension.
+You can also check the [releases page](https://github.com/glasket/pogext/releases), the latest version will always be there with instructions on how to install it manually.
 
 ## How can I help?
 
 Send suggestions, open issues, and report bugs. If you really want to you can even contribute here on GitHub.\
 \
 [Contact](mailto:temperdesignllc@gmail.com)
-
-

@@ -1,0 +1,28 @@
+{
+  "name": "pogext",
+  "version": "1.4.0",
+  "description": "ActualPogChamp browser extension",
+  "main": "pog.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glasket/pogext.git"
+  },
+  "author": "Glasket",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/glasket/pogext/issues"
+  },
+  "homepage": "https://github.com/glasket/pogext#readme",
+  "devDependencies": {
+    "@funboxteam/optimizt": "^5.0.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "prettier": "^3.0.3",
+    "terser-webpack-plugin": "^5.3.9",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
