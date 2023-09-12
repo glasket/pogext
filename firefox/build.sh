@@ -3,4 +3,4 @@
 npm ci
 npm run build --if-present
 cd dist
-zip -r ../pogext.zip *
+zip -r ../firefox.zip *
