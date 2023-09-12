@@ -22,7 +22,7 @@ let searching = false;
 const pog = document.createElement('img');
 pog.alt = 'PogChamp';
 pog.className = 'chat-image chat-line__message--emote';
-pog.src = chrome.runtime.getURL('images/128.webp');
+pog.src = chrome.runtime.getURL('images/128.png');
 
 // PogChamp for emote picker
 const pogPicker = pog.cloneNode();
