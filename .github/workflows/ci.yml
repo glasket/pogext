@@ -21,6 +21,15 @@ jobs:
       - name: Build
         run: |
           make
+      - name: Gather Firefox Source Submission
+        run: |
+          mkdir ff
+          cp ./{makefile,manifest.template.json,package-lock.json,package.json,pog.js,webpack.config.js,background.js} ff/
+          mkdir ff/images
+          cp images/128.png ff/images/
+          cp firefox/* ff/
+          cd ff
+          zip -r ../ff-source.zip *
       - name: Archive
         uses: actions/upload-artifact@v3
         with:
@@ -28,22 +37,4 @@ jobs:
           path: |
             chrome.zip
             firefox.zip
-  firefox:
-    name: Build Firefox source code submission
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Gather files
-        run: |
-          mkdir ff
-          cp ./{manifest.json,package-lock.json,package.json,pog.js,webpack.config.js,background.js} ff/
-          mkdir ff/images
-          cp images/128.png ff/images/
-          cp firefox/* ff/
-      - name: Archive
-        uses: actions/upload-artifact@v3
-        with:
-          name: firefox-source
-          path: ff
+            ff-source.zip

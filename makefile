@@ -22,4 +22,4 @@ node_modules: package-lock.json
 build: dist/firefox dist/chrome
 
 clean:
-	rm -rf dist firefox.zip chrome.zip
+	rm -rf dist firefox.zip chrome.zip chrome-manifest.json firefox-manifest.json node_modules

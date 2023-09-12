@@ -5,10 +5,12 @@ Download the latest Node LTS [from nodejs](https://nodejs.org/en/download) or vi
 Run:
 
 ```bash
+make firefox.zip
+# Or
 npm ci
-npm build --if-present
-cd dist
-zip -r ../pogext.zip \*
+npm run build --if-present
+cd dist/firefox
+zip -r ../../firefox.zip *
 ```
 
 If using the build.sh, then run from the root project directory. You may have to use `chmod +x build.sh`.
