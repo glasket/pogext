@@ -5,6 +5,8 @@ const { writeFileSync, readFileSync } = require('fs');
 
 module.exports = (env) => {
   const manifest = JSON.parse(readFileSync('manifest.template.json'));
+  const package = JSON.parse(readFileSync('package.json'));
+  manifest.version = package.version;
 
   let folder;
 

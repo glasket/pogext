@@ -19,6 +19,9 @@ dist/chrome: $(build_deps)
 node_modules: package-lock.json
 	npm ci
 
+package-lock.json: package.json
+	npm i
+
 build: dist/firefox dist/chrome
 
 clean:

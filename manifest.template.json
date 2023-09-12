@@ -1,6 +1,6 @@
 {
   "name": "Actual PogChamp",
-  "version": "1.4.1",
+  "version": "",
   "description": "Script for replacing the twitch.tv global PogChamp emote with the original Gootecks version.",
   "manifest_version": 3,
   "content_scripts": [
