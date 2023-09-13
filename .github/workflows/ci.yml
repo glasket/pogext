@@ -55,10 +55,9 @@ jobs:
           npm ci
           npm run build:tm --if-present
       - name: Upload to S3
-        uses: shallwefootball/s3-upload-action@master
-        with:
-          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_bucket: ${{ secrets.AWS_BUCKET }}
-          source_dir: './dist/pog.user.js'
-          destination_dir: '/pog.user.js'
+        run: |
+          aws s3 cp dist/pog.user.js s3://glasket.com/pog.user.js
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
