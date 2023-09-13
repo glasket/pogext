@@ -1,3 +1,13 @@
+import { bigPogCtor, pogCtor, pogPickerCtor } from './elements';
+
+let pog, pogPicker, bigPog;
+
+export const init = (src) => {
+  pog = pogCtor(src);
+  pogPicker = pogPickerCtor(pog);
+  bigPog = bigPogCtor(pog);
+};
+
 const listeners = {
   card: false,
   pickerD: false,
@@ -17,21 +27,6 @@ let pickerParentBlock = null;
 let picker = null;
 
 let searching = false;
-
-// PogChamp emote for chat
-const pog = document.createElement('img');
-pog.alt = 'PogChamp';
-pog.className = 'chat-image chat-line__message--emote';
-pog.src = chrome.runtime.getURL('images/128.png');
-
-// PogChamp for emote picker
-const pogPicker = pog.cloneNode();
-pogPicker.className = 'emote-picker__image';
-
-// PogChamp for emote card
-const bigPog = pog.cloneNode();
-bigPog.className = 'emote-card__big-emote tw-image';
-bigPog.setAttribute('data-test-selector', 'big-emote');
 
 // Card
 // Timeouts help with delay in loading, 50ms is arbitrary limit
@@ -245,6 +240,16 @@ const runLive = () => {
 // End Live
 
 // VOD Chat : Entirely different from Live Chat for some reason
+const vodChatObserver = new MutationObserver((muts, obs) => {
+  muts.forEach((mut) => {
+    if (mut.type === 'childList' && mut.addedNodes.length > 0) {
+      mut.addedNodes.forEach((node) => {
+        getAndSwapVodEmotes(node);
+      });
+    }
+  });
+});
+
 const vodChatLoaded = (vodChat) => {
   const getAndSwapVodEmotes = (chatMessage) => {
     const emotes = chatMessage.getElementsByClassName('chat-image__container');
@@ -253,16 +258,6 @@ const vodChatLoaded = (vodChat) => {
       if (img.alt === 'PogChamp') img.replaceWith(pog.cloneNode());
     }
   };
-
-  const vodChatObserver = new MutationObserver((muts, obs) => {
-    muts.forEach((mut) => {
-      if (mut.type === 'childList' && mut.addedNodes.length > 0) {
-        mut.addedNodes.forEach((node) => {
-          getAndSwapVodEmotes(node);
-        });
-      }
-    });
-  });
 
   vodChatObserver.observe(vodChat, { childList: true });
   for (let x = 0, preload = vodChat.children.length; x < preload; x++) {
@@ -293,7 +288,7 @@ const runVod = () => {
   }
 };
 
-const fetchElements = (ctr) => {
+const fetchElements = (timeout) => {
   if (!cardHolder) {
     cardHolder = document.getElementsByClassName('viewer-card-layer')[0];
   }
@@ -310,7 +305,7 @@ const fetchElements = (ctr) => {
     )[0];
   }
 
-  if (ctr >= 6) {
+  if (timeout >= 3000) {
     if (chatList) {
       console.log(
         `Running live, card: ${!!cardHolder} | picker: ${!!pickerParentBlock}`,
@@ -321,14 +316,14 @@ const fetchElements = (ctr) => {
   }
 
   if (!cardHolder || !pickerParentBlock || !chatList) {
-    setTimeout(fetchElements, ctr * 1000, ctr + 1);
+    setTimeout(fetchElements, timeout, timeout * 3);
   } else {
     console.log('Running live');
     runLive();
   }
 };
 
-const start = () => {
+export const start = () => {
   const loc = window.location.pathname.split('/')[1];
   if (loc) {
     if (loc === 'videos') {
@@ -342,52 +337,48 @@ const start = () => {
 };
 
 let waiters = 0;
-chrome.runtime.onMessage.addListener((msg) => {
-  console.log('message received');
-  waiters++;
-  if (msg.status === 'changed') {
-    for (const key in listeners) {
-      if (listeners[key]) {
-        switch (key) {
-          case 'card':
-            cardObserver.disconnect();
-            cardHolder = null;
-            break;
-          case 'pickerD':
-            pickerDialogObserver.disconnect();
-            pickerParentBlock = null;
-            break;
-          case 'picker':
-            pickerObserver.disconnect();
-            pickerVisObserver.disconnect();
-            picker = null;
-          case 'scroll':
-            scrollObserver.disconnect();
-            pickerParentBlock = null;
-            break;
-          case 'search':
-            searchObserver.disconnect();
-            searching = false;
-          case 'chat':
-            chatObserver.disconnect();
-            break;
-          case 'vod':
-            vodChatObserver.disconnect();
-            break;
-          default:
-        }
-        listeners[key] = false;
-      }
-    }
 
-    setTimeout(() => {
-      waiters--; // For debouncing, sort of
-      if (waiters !== 0) {
-        return;
+export const stop = () => {
+  waiters++;
+  for (const key in listeners) {
+    if (listeners[key]) {
+      switch (key) {
+        case 'card':
+          cardObserver.disconnect();
+          cardHolder = null;
+          break;
+        case 'pickerD':
+          pickerDialogObserver.disconnect();
+          pickerParentBlock = null;
+          break;
+        case 'picker':
+          pickerObserver.disconnect();
+          pickerVisObserver.disconnect();
+          picker = null;
+        case 'scroll':
+          scrollObserver.disconnect();
+          pickerParentBlock = null;
+          break;
+        case 'search':
+          searchObserver.disconnect();
+          searching = false;
+        case 'chat':
+          chatObserver.disconnect();
+          break;
+        case 'vod':
+          vodChatObserver.disconnect();
+          break;
+        default:
       }
-      start();
-    }, 3000);
+      listeners[key] = false;
+    }
   }
-});
-console.log('Loaded Pog');
-start();
+
+  setTimeout(() => {
+    waiters--; // For debouncing, sort of
+    if (waiters !== 0) {
+      return;
+    }
+    start();
+  }, 3000);
+};

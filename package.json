@@ -5,8 +5,10 @@
   "main": "pog.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --env=firefox",
-    "build-chrome": "webpack --env=chrome"
+    "build": "webpack --env=firefox --mode=production",
+    "build:chrome": "webpack --env=chrome --mode=production",
+    "build:tm": "webpack --env=monkey --mode=production",
+    "debug": "webpack --env=debug"
   },
   "repository": {
     "type": "git",

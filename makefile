@@ -1,6 +1,7 @@
-build_deps = pog.js background.js manifest.template.json webpack.config.js images/128.png node_modules
+src_files = $(shell find src -type f)
+build_deps = $(src_files) manifest.template.json webpack.config.js images/128.png node_modules
 
-.PHONY: all build
+.PHONY: all build clean
 
 all: firefox.zip chrome.zip
 
@@ -14,7 +15,7 @@ dist/firefox: $(build_deps)
 	npm run build --if-present
 
 dist/chrome: $(build_deps)
-	npm run build-chrome --if-present
+	npm run build:chrome --if-present
 
 node_modules: package-lock.json
 	npm ci

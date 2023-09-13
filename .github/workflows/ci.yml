@@ -24,10 +24,11 @@ jobs:
       - name: Gather Firefox Source Submission
         run: |
           mkdir ff
-          cp ./{makefile,manifest.template.json,package-lock.json,package.json,pog.js,webpack.config.js,background.js} ff/
+          cp ./{makefile,manifest.template.json,package-lock.json,package.json,webpack.config.js} ff/
           mkdir ff/images
           cp images/128.png ff/images/
           cp firefox/* ff/
+          cp -r src ff/src
           cd ff
           zip -r ../ff-source.zip *
       - name: Archive
@@ -38,3 +39,29 @@ jobs:
             chrome.zip
             firefox.zip
             ff-source.zip
+
+  tampermonkey:
+    name: Build Tampermonkey script
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - name: Build
+        run: |
+          npm run build:tm
+      - name: Upload to S3
+        uses: hkusu/s3-upload-action@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-1'
+          aws-bucket: ${{ secrets.AWS_BUCKET }}
+          public: true
+          bucket-root: '/'
+          destination-dir: '/'
+          file-path: './dist/pog.user.js'
+          content-type: 'application/javascript'
