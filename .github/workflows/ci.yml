@@ -52,7 +52,8 @@ jobs:
           node-version: '18.x'
       - name: Build
         run: |
-          npm run build:tm
+          npm ci
+          npm run build:tm --if-present
       - name: Upload to S3
         uses: hkusu/s3-upload-action@v2
         with:
