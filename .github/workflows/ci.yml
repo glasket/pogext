@@ -32,6 +32,13 @@ jobs:
           cp -r src ff/src
           cd ff
           zip -r ../ff-source.zip *
+      - name: Upload userscript
+        run: |
+          aws s3 cp dist/pog.user.js s3://glasket.com/pog.user.js
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
       - name: Archive
         uses: actions/upload-artifact@v3
         with:
@@ -40,25 +47,3 @@ jobs:
             chrome.zip
             firefox.zip
             ff-source.zip
-
-  tampermonkey:
-    name: Build Tampermonkey script
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-      - name: Build
-        run: |
-          npm ci
-          npm run build:tm --if-present
-      - name: Upload to S3
-        run: |
-          aws s3 cp dist/pog.user.js s3://glasket.com/pog.user.js
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1

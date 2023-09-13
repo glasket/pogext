@@ -3,13 +3,16 @@ build_deps = $(src_files) manifest.template.json webpack.config.js images/128.pn
 
 .PHONY: all build clean
 
-all: firefox.zip chrome.zip
+all: firefox.zip chrome.zip dist/pog.user.js
 
 firefox.zip: dist/firefox
 	cd dist/firefox && zip -r ../../firefox.zip *
 
 chrome.zip: dist/chrome
 	cd dist/chrome && zip -r ../../chrome.zip *
+
+dist/pog.user.js: $(build_deps)
+	npm run build:tm --if-present
 
 dist/firefox: $(build_deps)
 	npm run build --if-present
