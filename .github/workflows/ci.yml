@@ -11,6 +11,10 @@ on:
 env:
   AWS_REGION: us-east-1
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     name: Build extension
@@ -39,7 +43,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::626281517120:role/FilesGlasketS3Role
-          role-duration-seconds: 60
+          role-duration-seconds: 900
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
       - name: Upload userscript
