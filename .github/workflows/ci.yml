@@ -8,6 +8,9 @@ on:
     branches: [master]
   workflow_dispatch: {}
 
+env:
+  AWS_REGION: us-east-1
+
 jobs:
   build:
     name: Build extension
@@ -32,13 +35,16 @@ jobs:
           cp -r src ff/src
           cd ff
           zip -r ../ff-source.zip *
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::626281517120:role/FilesGlasketS3Role
+          role-duration-seconds: 60
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
       - name: Upload userscript
         run: |
-          aws s3 cp dist/pog.user.js s3://glasket.com/pog.user.js
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
+          aws s3 cp dist/pog.user.js s3://files.glasket.com/pog.user.js
       - name: Archive
         uses: actions/upload-artifact@v3
         with:

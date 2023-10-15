@@ -112,8 +112,8 @@ const tamperMonkeyHeader = `// ==UserScript==
 // @match        *://*.twitch.tv/*
 // @grant        window.onurlchange
 // @run-at       document-end
-// @updateURL    https://glasket.com/pog.user.js
-// @downloadURL  https://glasket.com/pog.user.js
+// @updateURL    https://files.glasket.com/pog.user.js
+// @downloadURL  https://files.glasket.com/pog.user.js
 // @icon         https://raw.githubusercontent.com/glasket/pogext/master/images/128.png
 // ==/UserScript==\n`;
 
